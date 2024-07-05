@@ -1,5 +1,6 @@
 package roomescape.reservation.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,7 @@ public class ReservationController {
     public String reservation() { return "reservation"; }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> addReservation(@RequestBody ReservationRequest request) {
-        if (Stream.of(request.getName(), request.getDate(), request.getTime()).anyMatch(Objects::isNull))
-            return ResponseEntity.badRequest().build();
-
+    public ResponseEntity<ReservationResponse> addReservation(@Valid @RequestBody ReservationRequest request) {
         Long newId = index.getAndIncrement();
         Reservation newReservation = new Reservation(newId, request.getName(), request.getDate(), request.getTime());
         reservations.add(newReservation);

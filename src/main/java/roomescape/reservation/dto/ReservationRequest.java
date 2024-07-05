@@ -1,8 +1,13 @@
 package roomescape.reservation.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
+import org.springframework.format.annotation.DateTimeFormat;
 import roomescape.reservation.domain.Reservation;
 
 import java.time.LocalDate;
@@ -12,8 +17,16 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationRequest {
+
+    @NotBlank
     private String name;
+
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
+    @NotNull
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime time;
 
     public Reservation toReservation() {
