@@ -13,10 +13,8 @@ import roomescape.reservation.dto.ReservationResponse;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class ReservationController {
@@ -41,6 +39,20 @@ public class ReservationController {
         return ResponseEntity.created(location).body(response);
     }
 
+    @GetMapping("/reservations")
+    public ResponseEntity<List<Reservation>> getReservations() {
+        String sql = "SELECT id, name, date, time FROM reservation";
+        List<Reservation> reservations = jdbcTemplate.query(sql, (resultSet, rowNum) -> (
+            new Reservation(
+                resultSet.getLong("id"),
+                resultSet.getString("name"),
+                resultSet.getDate("date").toLocalDate(),
+                resultSet.getTime("time").toLocalTime()
+            )
+        ));
+        return ResponseEntity.ok(reservations);
+    }
+
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity<List<ReservationResponse>> deleteReservation(@PathVariable Long id) {
         boolean exists = reservations.stream().anyMatch(reservation -> reservation.getId().equals(id));
@@ -53,10 +65,5 @@ public class ReservationController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/reservations")
-    public ResponseEntity<List<Reservation>> reservations() {
-        return ResponseEntity.ok().body(reservations);
     }
 }
