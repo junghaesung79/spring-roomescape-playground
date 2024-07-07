@@ -11,10 +11,7 @@ import roomescape.reservation.dto.ReservationRequest;
 import roomescape.reservation.dto.ReservationResponse;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Controller
 public class ReservationController {
@@ -22,17 +19,16 @@ public class ReservationController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private AtomicLong index = new AtomicLong(1);
-    private List<Reservation> reservations = new ArrayList<>();
-
     @GetMapping("/reservation")
     public String reservation() { return "reservation"; }
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> addReservation(@Valid @RequestBody ReservationRequest request) {
-        Long newId = index.getAndIncrement();
+        String sql = "INSERT INTO reservation(name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, request.getName(), request.getDate(), request.getTime());
+
+        Long newId = jdbcTemplate.queryForObject("SELECT count(*) from reservation", Long.class);
         Reservation newReservation = new Reservation(newId, request.getName(), request.getDate(), request.getTime());
-        reservations.add(newReservation);
         ReservationResponse response = new ReservationResponse(newReservation);
 
         URI location = URI.create(String.format("/reservations/%d", newId));
@@ -54,16 +50,14 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<List<ReservationResponse>> deleteReservation(@PathVariable Long id) {
-        boolean exists = reservations.stream().anyMatch(reservation -> reservation.getId().equals(id));
-        if (!exists) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+        if (rowsAffected == 0) {
             return ResponseEntity.badRequest().build();
         }
 
-        reservations = reservations.stream()
-                .filter(reservation -> !reservation.getId().equals(id))
-                .collect(Collectors.toList());
-
         return ResponseEntity.noContent().build();
     }
+
 }
