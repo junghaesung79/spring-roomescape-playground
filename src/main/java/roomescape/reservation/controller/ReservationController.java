@@ -1,7 +1,9 @@
 package roomescape.reservation.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservation.domain.Reservation;
@@ -18,6 +20,9 @@ import java.util.stream.Stream;
 
 @Controller
 public class ReservationController {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private AtomicLong index = new AtomicLong(1);
     private List<Reservation> reservations = new ArrayList<>();
