@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import roomescape.domain.reservation.Reservation;
+import roomescape.domain.time.ReservationTime;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -26,10 +28,9 @@ public class ReservationRequest {
     private LocalDate date;
 
     @NotNull
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime time;
+    private Long timeId;
 
     public Reservation toReservation() {
-        return new Reservation(null, name, date, time);
+        return new Reservation(null, name, date, timeId, null);
     }
 }
