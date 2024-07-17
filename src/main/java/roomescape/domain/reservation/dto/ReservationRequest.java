@@ -1,4 +1,4 @@
-package roomescape.reservation.dto;
+package roomescape.domain.reservation.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
-import roomescape.reservation.domain.Reservation;
+import roomescape.domain.reservation.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,9 +1,9 @@
-package roomescape.reservation.dto;
+package roomescape.domain.reservation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import roomescape.reservation.domain.Reservation;
+import roomescape.domain.reservation.Reservation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
